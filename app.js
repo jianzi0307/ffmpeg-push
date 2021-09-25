@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require("express");
 const expressWebSocket = require("express-ws");
 const ffmpeg = require("fluent-ffmpeg");
@@ -8,7 +9,8 @@ const webSocketStream = require("websocket-stream/stream");
 
 function localServer() {
   let app = express();
-  app.use(express.static(__dirname));
+  // app.use(express.static(__dirname));
+  app.use(express.static(path.resolve(__dirname, './dist/online')));
   expressWebSocket(app, null, {
     perMessageDeflate: true
   });
