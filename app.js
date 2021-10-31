@@ -16,7 +16,7 @@ function localServer() {
   });
   app.ws("/rtsp/:id/", rtspRequestHandle)
   app.listen(8889);
-  console.log("express listened")
+  console.log("express listening on port 8889")
 }
 function rtspRequestHandle(ws, req) {
   console.log("rtsp request handle");
