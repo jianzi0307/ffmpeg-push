@@ -29,28 +29,53 @@ function rtspRequestHandle(ws, req) {
   let url = req.query.url;
   console.log("rtsp url:", url);
   console.log("rtsp params:", req.params);
+  let type = req.query.type
   try {
-    ffmpeg(url)
-      // 这里可以添加一些 RTSP 优化的参数
-      .addInputOption("-rtsp_transport", "tcp", "-buffer_size", "102400")
-      .on("start", function () {
-        console.log(url, "Stream started.");
-      })
-      .on("codecData", function () {
-        console.log(url, "Stream codecData.")
-        // 摄像机在线处理
-      })
-      .on("error", function (err) {
-        console.log(url, "An error occured: ", err.message);
-      })
-      .on("end", function () {
-        console.log(url, "Stream end!");
-        // 摄像机断线的处理
-      })
-      .outputFormat("flv")
-      .videoCodec("copy")
-      .noAudio()
-      .pipe(stream);
+    if (type === 'flv') {
+      ffmpeg(url)
+        // 这里可以添加一些 RTSP 优化的参数
+        .addInputOption("-rtsp_transport", "tcp", "-buffer_size", "102400")
+        .on("start", function () {
+          console.log(url, "[flv] Stream started.");
+        })
+        .on("codecData", function () {
+          console.log(url, "[flv] Stream codecData.")
+          // 摄像机在线处理
+        })
+        .on("error", function (err) {
+          console.log(url, "[flv] An error occured: ", err.message);
+        })
+        .on("end", function () {
+          console.log(url, "[flv] Stream end!");
+          // 摄像机断线的处理
+        })
+        .outputFormat("flv")
+        .videoCodec("copy")
+        .noAudio()
+        .pipe(stream);
+    }
+    if (type === 'mpeg') {
+      ffmpeg(url)
+        .addInputOptions(['-rtsp_transport tcp', '-buffer_size 102400'])
+        .on("start", function () {
+          console.log(url, "[mpeg] Stream started.");
+        })
+        .on("codecData", function () {
+          console.log(url, "[mpeg] Stream codecData.")
+          // 摄像机在线处理
+        })
+        .on("error", function (err) {
+          console.log(url, "[mpeg] An error occured: ", err.message);
+        })
+        .on("end", function () {
+          console.log(url, "[mpeg] Stream end!");
+          // 摄像机断线的处理
+        })
+        .outputFormat('mpegts')
+        .videoCodec('mpeg1video')
+        .noAudio()
+        .pipe(stream);
+    }
   } catch (error) {
     console.log(error, '<<<error');
   }
